@@ -11,7 +11,7 @@ variable aws_ami{
     default = "ami-0dc2d3e4c0f9ebd18"
 }
 variable aws_key_name{
-    default = "MyKeyPair"
+    default = "ust-manu"
 }
 variable aws_subnet_id{
     default = "subnet-0de6381deb870a130"
