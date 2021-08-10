@@ -1,0 +1,17 @@
+---
+ - name: Deploy War
+   hosts: centos
+   tasks:
+     - name: Stop Tomcat
+       shell: /opt/tomcat/bin/shutdown.sh
+
+     - name: Delete old war
+       command: rm -rf /opt/tomcat/webapps/*
+       
+     - name: Copy the war file
+       copy:
+         src: /target/hello-world-war-1.0.0.war
+         dest: /opt/tomcat/webapps/hello.war
+
+     - name: Start Tomcat
+       shell: nohup  /opt/tomcat/bin/startup.sh
