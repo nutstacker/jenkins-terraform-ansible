@@ -10,7 +10,7 @@ pipeline{
         stage('checkout') {
             steps {
                 
-                git 'https://github.com/Katharine-git/terraform_and_ansible_roles.git'
+                git 'https://github.com/nutstacker/jenkins-terraform-ansible'
             }
         }  
         stage('Terraform init'){
