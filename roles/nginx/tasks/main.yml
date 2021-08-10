@@ -12,7 +12,7 @@
 - name: Add epel-release repo
   shell: amazon-linux-extras install epel -y
   shell: yum-config-manager --enable epel
-  shell: sudo yum update
+  shell: pwd
 
 - name: Install nginx
   shell: yum install nginx
