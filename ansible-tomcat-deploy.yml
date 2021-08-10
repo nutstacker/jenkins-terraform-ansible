@@ -10,7 +10,7 @@
        
      - name: Copy the war file
        copy:
-         src: /target/hello-world-war-1.0.0.war
+         src: /var/lib/jenkins/.m2/repository/com/efsavage/hello-world-war/1.0.0/hello-world-war-1.0.0.war
          dest: /opt/tomcat/webapps/hello.war
 
      - name: Start Tomcat
