@@ -11,7 +11,7 @@
 
 - name: Add epel-release repo
   yum:
-    name: epel-release
+    name: epel
     state: present
 
 - name: Install nginx
