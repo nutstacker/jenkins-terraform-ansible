@@ -25,7 +25,7 @@ pipeline{
         }
         stage('invoke ansiblle-playbook'){
             steps{
-                ansiblePlaybook credentialsId: 'ust-manu', disableHostKeyChecking: true, installation: 'ansible-master', inventory: 'hosts.ini', playbook: 'roles.yml'
+                ansiblePlaybook credentialsId: 'ust-test', disableHostKeyChecking: true, installation: 'ansible-master', inventory: 'hosts.ini', playbook: 'roles.yml'
             }
         
         }
