@@ -15,6 +15,11 @@ pipeline{
             steps {
                 sh 'mvn clean install'
             }
+        }
+        stage('Jenkins Deploy') {
+            steps {
+                ansiblePlaybook credentialsId: 'ust-test', disableHostKeyChecking: true, installation: 'ansible-master', inventory: 'hosts.ini', playbook: 'ansible-tomcat-deploy.yml'
+            }
         } 
     }
 }
