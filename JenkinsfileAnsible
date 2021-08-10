@@ -13,13 +13,9 @@ pipeline{
                 git 'https://github.com/nutstacker/jenkins-terraform-ansible'
             }
         }  
-        stage('Terraform init'){
+        stage('invoke ansiblle-playbook'){
             steps{
-                dir('terraform') {
-                    sh 'terraform init'
-                    sh 'terraform plan' 
-                    sh 'terraform apply --auto-approve'                  
-                }
+                ansiblePlaybook credentialsId: 'ust-test', disableHostKeyChecking: true, installation: 'ansible-master', inventory: 'hosts.ini', playbook: 'roles.yml'
             }
         }
     }
