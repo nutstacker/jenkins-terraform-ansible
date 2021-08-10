@@ -33,7 +33,7 @@
 
 - name: copy config files
   template:
-    src: servers.xml.j2
+    src: server.xml.j2
     dest: /opt/tomcat/conf/server.xml
 
 - name: Start and enable tomcat
