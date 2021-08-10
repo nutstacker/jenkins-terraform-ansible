@@ -10,9 +10,8 @@
     home: /etc/nginx
 
 - name: Add epel-release repo
-  yum:
-    name: epel
-    state: present
+  shell: amazon-linux-extras install epel -y
+  shell: yum-config-manager --enable epel
 
 - name: Install nginx
   yum:
