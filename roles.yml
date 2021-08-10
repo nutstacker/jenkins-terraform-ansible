@@ -1,4 +1,4 @@
-- name: install Java, tomcat and ngins as reverse proxy
+- name: install Java, tomcat and nginx as reverse proxy
   hosts: centos
   become: true
   roles:
