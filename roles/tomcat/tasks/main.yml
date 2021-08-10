@@ -1,0 +1,41 @@
+---
+# tasks file for tomcat
+- name: Add tomcat group
+  group:
+    name: tomcat
+
+- name: Add "tomcat" user
+  user:
+    name: tomcat
+    group: tomcat
+    home: /opt
+
+- name: Download Tomcat
+  get_url:
+    url: "{{ tomcat_archive_url }}"
+    dest: /opt
+
+- name: Extract tomcat archive
+  unarchive:
+    src: "{{ tomcat_archive_dest }}"
+    dest: /opt
+    owner: tomcat
+    group: tomcat
+    remote_src: yes
+
+- name: Rename tomcat folder
+  shell: mv /opt/apache-tomcat-10.0.0 /opt/tomcat
+
+- name: Clean up tar files
+  file:
+    path: "{{ tomcat_archive_dest }}"
+    state: absent
+
+- name: copy config files
+  template:
+    src: servers.xml.j2
+    dest: /opt/tomcat/conf/server.xml
+
+- name: Start and enable tomcat
+  shell: nohup sh /opt/tomcat/bin/startup.sh &
+  become: true

@@ -1,0 +1,61 @@
+---
+- name: Add tomcat nginx
+  group:
+    name: nginx
+
+- name: Add "tomcat" user
+  user:
+    name: nginx
+    group: nginx
+    home: /etc/nginx
+
+- name: Add epel-release repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install nginx
+  yum:
+    name: nginx
+    state: present
+
+- name: start nginx
+  service:
+    name: nginx
+    state: started
+  become: yes
+
+- name: create configuration directories
+  file:
+    path: /etc/ssl/{{ item }}
+    state: directory
+    owner: nginx
+    group: nginx
+  loop:
+    - private
+    - certs
+
+- name: configure nginx as reverse proxy
+  template:
+    src: nginx.conf-copy
+    dest: /etc/nginx/nginx.conf
+
+- name: configure nginx
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+  with_items:
+     - {src: 'nginx-selfsigned.key',dest: '{{ key_path }}' }
+     - {src: 'dhparam.pem',dest: '{{ certs_path }}' }
+     - {src: 'make-dummy-cert',dest: '{{ certs_path }}' }
+     - {src: 'Makefile',dest: '{{ certs_path }}' }
+     - {src: 'nginx-selfsigned.crt',dest: '{{ certs_path }}' }
+     - {src: 'renew-dummy-cert',dest: '{{ certs_path }}' }
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+  become: yes
+
+

@@ -1,0 +1,2 @@
+java_name: "{{download_folder}}/jdk1.8.0_151"
+java_archive: "{{download_folder}}/jdk-8u151-linux-x64.tar.gz"

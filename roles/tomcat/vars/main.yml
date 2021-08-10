@@ -1,0 +1,4 @@
+---
+# vars file for tomcat
+tomcat_ver : 10.0.0
+port: 8088
