@@ -16,11 +16,11 @@
           warn: false
        
      - name: Delete old war
-       shell: rm -rf /opt/tomcat/webapps/hello-world-war-1.0.0.war state=absent 
+       shell: rm -rf /opt/tomcat/webapps/*
      
      - name: copy war file to tomcat
        copy:
-         src: /var/lib/jenkins/workspace/ansible-tomcat-deploy/target/hello-world-war-1.0.0.war
+         src: /var/lib/jenkins/.m2/repository/com/efsavage/hello-world-war/1.0.0/hello-world-war-1.0.0.war
          dest: /opt/tomcat/webapps/hello.war
 
      - name: Start Tomcat
