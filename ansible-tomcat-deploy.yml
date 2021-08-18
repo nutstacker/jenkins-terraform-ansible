@@ -1,17 +1,28 @@
----
- - name: Deploy War
-   hosts: centos
-   tasks:
-     - name: Stop Tomcat
-       shell: sudo /opt/tomcat/bin/shutdown.sh
 
-     - name: Delete old war
-       command: sudo rm -rf /opt/tomcat/webapps/*
+---
+ - name: Deploy war
+   hosts: centos
+   become: yes
+   become_method: sudo
+   remote_user: ec2-user
+   tasks:
+     - name: Stop tomcat
+       shell: nohup sh /opt/tomcat/bin/shutdown.sh &
+       become: true
+     
+     - name: changing permissions for webapps folder
+       command: chmod 775 /opt/tomcat/webapps
+       args:
+          warn: false
        
-     - name: Copy the war file
+     - name: Delete old war
+       shell: rm -rf /opt/tomcat/webapps/hello-world-war-1.0.0.war state=absent 
+     
+     - name: copy war file to tomcat
        copy:
-         src: /var/lib/jenkins/.m2/repository/com/efsavage/hello-world-war/1.0.0/hello-world-war-1.0.0.war
+         src: /var/lib/jenkins/workspace/ansible-tomcat-deploy/target/hello-world-war-1.0.0.war
          dest: /opt/tomcat/webapps/hello.war
 
      - name: Start Tomcat
-       shell: nohup  /opt/tomcat/bin/startup.sh
+       shell: nohup sh /opt/tomcat/bin/startup.sh &
+       become: true
