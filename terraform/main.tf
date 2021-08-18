@@ -167,7 +167,7 @@ resource "aws_instance" "ustInstance" {
   key_name      = var.aws_key_name
   network_interface {
      network_interface_id = aws_network_interface.ani.id
-     device_index = var.instance_index
+     device_index = 0
   }
    tags = {
      Name = var.instance_name
