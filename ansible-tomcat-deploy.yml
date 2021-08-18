@@ -6,7 +6,7 @@
        shell: sudo /opt/tomcat/bin/shutdown.sh
 
      - name: Delete old war
-       command: rm -rf /opt/tomcat/webapps/*
+       command: sudo rm -rf /opt/tomcat/webapps/*
        
      - name: Copy the war file
        copy:
