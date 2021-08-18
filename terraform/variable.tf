@@ -86,7 +86,7 @@ variable ingress_test_from{
     default = "8081"
 }
 variable ingress_test_to{
-    default = "8089"
+    default = "8095"
 }
 variable egress{
     default = "0"
