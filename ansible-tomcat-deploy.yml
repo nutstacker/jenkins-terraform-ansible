@@ -3,7 +3,7 @@
    hosts: centos
    tasks:
      - name: Stop Tomcat
-       shell: /opt/tomcat/bin/shutdown.sh
+       shell: sudo /opt/tomcat/bin/shutdown.sh
 
      - name: Delete old war
        command: rm -rf /opt/tomcat/webapps/*
