@@ -5,10 +5,10 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = var.s3_bucket
-    key    = var.state_key
-    region = var.region
-    dynamodb_table = var.dynamodb_table
+    bucket = "iactools"
+    key    = "terraform_state/terraform.tfstate"
+    region = "us-east-1"
+    dynamodb_table = "terraform-state-lock"
   }
 }
 
