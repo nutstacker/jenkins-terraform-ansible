@@ -16,6 +16,11 @@ pipeline{
                 sh 'mvn clean install'
             }
         }
+        stage('checkout devops-scripts') {
+            steps {
+                git 'https://github.com/nutstacker/jenkins-terraform-ansible'
+            }
+        }
         stage('Jenkins Deploy') {
             steps {
                 ansiblePlaybook credentialsId: 'ust-test', disableHostKeyChecking: true, installation: 'ansible-master', inventory: 'hosts.ini', playbook: 'ansible-tomcat-deploy.yml'
