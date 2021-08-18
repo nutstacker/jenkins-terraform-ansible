@@ -1,14 +1,14 @@
 provider "aws" {
-  profile = "default"
-  region  = "us-east-1"
+  profile = var.profile
+  region  = var.region
 }
 
 terraform {
   backend "s3" {
-    bucket = "iactools"
-    key    = "terraform_state/terraform.tfstate"
-    region = "us-east-1"
-    dynamodb_table = "terraform-state-lock"
+    bucket = var.s3_bucket
+    key    = var.state_key
+    region = var.region
+    dynamodb_table = var.dynamodb_table
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_vpc" "ust_Manu" {
   cidr_block = var.vpc_cidr_block
 
   tags = {
-    Name = "ust_VPC"
+    Name = var.vpc_name
   }
 
 }
@@ -31,7 +31,7 @@ resource "aws_subnet" "ust_subnet" {
   availability_zone = var.aws_az
 
   tags = {
-    Name = "ust_subnet"
+    Name = var.subnet_name
   }
 
 }
@@ -42,7 +42,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.ust_Manu.id
 
   tags = {
-    Name = "ust_gw"
+    Name = var.gateway_name
   }
 }
 
@@ -52,12 +52,12 @@ resource "aws_route_table" "rt" {
   vpc_id = aws_vpc.ust_Manu.id
 
   route {
-      cidr_block = "0.0.0.0/0"
+      cidr_block = var.route_cidr_block
       gateway_id = aws_internet_gateway.gw.id
     }
 
   tags = {
-    Name = "ust_rt"
+    Name = var.route_table_name
   }
 }
 
@@ -76,7 +76,7 @@ resource "aws_eip" "ust_eip" {
   associate_with_private_ip = var.private_ip
 
   tags = {
-    Name = "ust_eip"
+    Name = var.eip_name
   }
 
 }
@@ -89,48 +89,41 @@ resource "aws_security_group" "ust_sg" {
 
   ingress {
     description = "HTTP"
-    from_port   = 80
-    to_port     = 80
+    from_port   = var.ingress_1
+    to_port     = var.ingress_1
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.security_cidr_blocks
   }
   
   ingress {
     description = "HTTP"
-    from_port   = 8081
-    to_port     = 8089
+    from_port   = var.ingress_test_from
+    to_port     = var.ingress_test_to
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.security_cidr_blocks
   }
 
   ingress {
     description = "SSH"
-    from_port   = 22
-    to_port     = 22
+    from_port   = var.ingress_2
+    to_port     = var.ingress_2
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.security_cidr_blocks
   }
 
   ingress {
     description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
+    from_port   = var.ingress_3
+    to_port     = var.ingress_3
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 90
-    to_port     = 90
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.security_cidr_blocks
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
+    from_port   = var.egress
+    to_port     = var.egress
     protocol    = -1
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.security_cidr_blocks
   }
 }
 
@@ -142,33 +135,41 @@ resource "aws_network_interface" "ani" {
   security_groups = [aws_security_group.ust_sg.id]
 
   tags = {
-    Name = "ust_ni"
+    Name = var.network_interface_name
   }
 
 }
 
-#ebs_block_size
+#ebs_volume
 
 resource "aws_ebs_volume" "ebs" {
   availability_zone = var.aws_az
-  size              = 10
+  size              = var.ebs_volume_size
 
   tags = {
-    Name = "ust_volume"
+    Name = var.ebs_volume_name
   }
+}
+
+#ebs_volume attachment
+
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.ebs.id
+  instance_id = aws_instance.ustInstance.id
 }
 
 #Instance
 
 resource "aws_instance" "ustInstance" {
   ami           = var.aws_ami
-  instance_type = "t2.micro"
+  instance_type = var.instance_type
   key_name      = var.aws_key_name
   network_interface {
      network_interface_id = aws_network_interface.ani.id
-     device_index = 0
+     device_index = var.instance_index
   }
    tags = {
-     Name = "Deploy-VM"
+     Name = var.instance_name
   }
 }
