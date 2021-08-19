@@ -1,0 +1,15 @@
+---
+- name: Download Apache Maven 
+  get_url: 
+    url: "{{ src_url }}"
+    dest: /opt
+
+- name: Extract Apache Maven archive
+  unarchive:
+    src: "{{ maven_archive_dest }}"
+    dest: /opt
+    remote_src: yes
+
+- name: Update path for maven use
+  shell: export PATH=/opt/apache-maven-{{ver}}/bin:$PATH
+

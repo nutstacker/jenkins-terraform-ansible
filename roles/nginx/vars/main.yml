@@ -1,8 +1,8 @@
 ---
 # vars file for /etc/ansible/roles/nginx
-ip_address: 172.32.20.84
-o_port: 443_
-port: 8088
+ip_address: 172.16.10.100
+o_port: 443
+port: 8095
 key_path: /etc/ssl/private
 certs_path: /etc/ssl/certs
 ssl_certificate_path: /etc/ssl/certs/nginx-selfsigned.crt

@@ -1,5 +1,7 @@
 ---
-# tasks file for tomcat
+- name: Apply yum update
+  command: sudo yum update -y
+
 - name: Add tomcat group
   group:
     name: tomcat
@@ -10,10 +12,16 @@
     group: tomcat
     home: /opt
 
+#Check if 'tomcat' folder exists
+- name: Check tomcat directory existence
+  stat: path=/opt/tomcat
+  register: tomcat_dir
+  
 - name: Download Tomcat
   get_url:
     url: "{{ tomcat_archive_url }}"
     dest: /opt
+  when: not tomcat_dir.stat.exists
 
 - name: Extract tomcat archive
   unarchive:
@@ -22,20 +30,45 @@
     owner: tomcat
     group: tomcat
     remote_src: yes
+    mode: 777
+  when: not tomcat_dir.stat.exists
 
 - name: Rename tomcat folder
   shell: mv /opt/apache-tomcat-10.0.0 /opt/tomcat
+  when: not tomcat_dir.stat.exists
 
 - name: Clean up tar files
   file:
     path: "{{ tomcat_archive_dest }}"
     state: absent
+    
+#- name: Symlink install directory
+#  file: src=/opt/apache-tomcat-10.0.0 path=/usr/share/tomcat state=link
 
+- name: Change ownership of Tomcat installation
+  file: path=/opt/tomcat/ owner=tomcat group=tomcat state=directory recurse=yes
+
+- name: Stop tomcat
+  shell: nohup sh /opt/tomcat/bin/shutdown.sh &
+  become: true
+#  become_user: tomcat
+  
 - name: copy config files
   template:
     src: server.xml.j2
-    dest: /opt/tomcat/conf/server.xml
+    dest: /opt/tomcat/conf/server.xml 
 
 - name: Start and enable tomcat
   shell: nohup sh /opt/tomcat/bin/startup.sh &
   become: true
+#  become_user: tomcat
+#- name: Install Tomcat init script
+#  copy: src=tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
+
+#- name: Start Tomcat
+#  service: name=tomcat state=started enabled=yes
+
+#- name: deploy iptables rules
+#  template: src=iptables-save dest=/etc/sysconfig/iptables
+#  when: "ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'"
+#  notify: restart iptables

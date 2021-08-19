@@ -26,3 +26,4 @@ for target in $@ ; do
         cat $PEM2 >> ${target}
         rm -f $PEM1 $PEM2
 done
+

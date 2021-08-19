@@ -41,7 +41,6 @@ usage:
         @echo "  make server.crt SERIAL=1"
         @echo "  make stunnel.pem EXTRA_FLAGS=-sha384"
         @echo "  make testcert DAYS=600"
-
 %.pem:
         umask 77 ; \
         PEM1=`/bin/mktemp /tmp/openssl.XXXXXX` ; \

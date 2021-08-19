@@ -39,3 +39,4 @@ mv -f $NEW $PEM
 rm -f $REQ $KEY $CRT
 
 exit 0
+
