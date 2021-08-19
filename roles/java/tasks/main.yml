@@ -1,7 +1,9 @@
 ---
 
 # Ansible role to install Oracle Java 8
-
+  - name: Apply yum update
+    command: sudo yum update -y
+    
   - name: Check If java is already installed or not
     shell: "{{ java_name }}/bin/java -version 2>&1 | grep version | awk '{print $3}' | sed 's/\"//g'"
     register: java_installed
